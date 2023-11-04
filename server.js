@@ -1,23 +1,45 @@
 import fastify from "fastify";
-import { DatabaseMemory } from "./database-memory";
+import { DatabaseMemory } from "./database-memory.js";
 
 const server = fastify();
 const database = new DatabaseMemory();
 
+server.post("/videos", (request, reply) => {
+  const { tittle, description, duration } = request.body;
+
+  database.create({
+    tittle,
+    description,
+    duration,
+  });
+
+  return reply.status(201).send();
+});
+
 server.get("/videos", () => {
-  return "Hello World";
+  const videos = database.list();
+
+  return videos;
 });
 
-server.post("/videos", () => {
-  return "Hello World";
+server.put("/videos/:id", (request, reply) => {
+  const videoID = request.params.id;
+  const { tittle, description, duration } = request.body;
+
+  database.update(videoID, {
+    tittle,
+    description,
+    duration,
+  });
+
+  return reply.status(204).send();
 });
 
-server.put("/videos/:id", () => {
-  return "Hello World";
-});
+server.delete("/videos/:id", (request, reply) => {
+  const videoId = request.params.id;
+  database.delete(videoId);
 
-server.delete("/videos/:id", () => {
-  return "Hello World";
+  return reply.status(204).send();
 });
 
 server.listen({
