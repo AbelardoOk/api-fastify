@@ -26,11 +26,11 @@ server.get("/videos", async (request) => {
   return videos;
 });
 
-server.put("/videos/:id", (request, reply) => {
+server.put("/videos/:id", async (request, reply) => {
   const videoID = request.params.id;
   const { tittle, description, duration } = request.body;
 
-  database.update(videoID, {
+  await database.update(videoID, {
     tittle,
     description,
     duration,
@@ -39,9 +39,9 @@ server.put("/videos/:id", (request, reply) => {
   return reply.status(204).send();
 });
 
-server.delete("/videos/:id", (request, reply) => {
+server.delete("/videos/:id", async (request, reply) => {
   const videoId = request.params.id;
-  database.delete(videoId);
+  await database.delete(videoId);
 
   return reply.status(204).send();
 });
